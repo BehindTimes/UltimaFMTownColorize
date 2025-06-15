@@ -143,7 +143,7 @@ namespace fmtownscolorize
                         bmp.SetPixel(x + ((indexY - 1) * width), y, blah);
                     }
                 }
-                startPos += 0x400;
+                startPos += (width * height);
             }
             bmp.Save(strOutFile, System.Drawing.Imaging.ImageFormat.Png);
         }
