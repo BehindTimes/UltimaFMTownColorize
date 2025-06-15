@@ -29,10 +29,10 @@ namespace fmtownscolorize
                 height = tifImage.Height;
                 width = tifImage.Width;
 
-                if (length % 0x200 != 0)
+                /*if (length % 0x200 != 0)
                 {
                     return 0;
-                }
+                }*/
             }
             catch (Exception ex)
             {
@@ -149,14 +149,10 @@ namespace fmtownscolorize
             byte[] data = File.ReadAllBytes(strFile);
             short[] shortArray = new short[(int)Math.Ceiling((data.Length - 0x200) / 2.0)]; // Create short array of appropriate size
             Buffer.BlockCopy(data, 0x200, shortArray, 0, (data.Length - 0x200));
-            List<short> list = new List<short>();
-            for (int index = 0; index < shortArray.Length; index++)
-            {
 
-                if (!list.Contains(shortArray[index]))
-                {
-                    list.Add(shortArray[index]);
-                }
+            if(strFile.Contains("DEMO3_2"))
+            {
+                int j = 9;
             }
             Bitmap bmp = new Bitmap(width, height);
             Color blah;
