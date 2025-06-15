@@ -49,6 +49,10 @@ namespace fmtownscolorize
 
                 if (val1 > 7 || val2 > 7)
                 {
+                    if(width * height * 2 + 0x200 != length)
+                    {
+                        return 2;
+                    }
                     return 0;
                 }
             }
@@ -144,6 +148,100 @@ namespace fmtownscolorize
             bmp.Save(strOutFile, System.Drawing.Imaging.ImageFormat.Png);
         }
 
+        // Totally guessing on the 8 and above.  Just grabbed the color value off of images
+        private void CreateFile16(string strFile, string strOutFile, int width, int height)
+        {
+            byte[] data = File.ReadAllBytes(strFile);
+            int numimages = (data.Length - 0x200) / ((width / 2) * height);
+            expandData(data);
+            int startPos = 0x400;
+            Bitmap bmp = new Bitmap(width * numimages, height);
+
+            for (int indexY = 1; indexY < numimages + 1; ++indexY)
+            {
+                int tempCount = 0;
+                Color blah;
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        int tempval = fileData[startPos + tempCount];
+                        tempCount++;
+
+                        switch (tempval)
+                        {
+                            case 0:
+                                if (numimages == 1)
+                                {
+                                    blah = Color.Black;
+                                }
+                                else
+                                {
+                                    blah = Color.Gray;
+                                }
+
+                                break;
+                            case 1:
+                                blah = Color.Blue;
+                                break;
+                            case 2:
+                                blah = Color.Red;
+                                break;
+                            case 3:
+                                blah = Color.Black;
+                                break;
+                            case 4:
+                                blah = Color.Lime;
+                                break;
+                            case 5:
+                                blah = Color.Cyan;
+                                break;
+                            case 6:
+                                blah = Color.Yellow;
+                                break;
+                            case 7:
+                                blah = Color.White;
+                                break;
+                            case 8:
+                                blah = Color.White;
+                                break;
+                            case 9:
+                                blah = Color.White;
+                                break;
+                            case 0xA:
+                                blah = Color.FromArgb(0, 113, 115);
+                                break;
+                            case 0xB:
+                                blah = Color.FromArgb(255, 245, 88);
+                                break;
+                            case 0xC:
+                                blah = Color.White;
+                                break;
+                            case 0xD:
+                                blah = Color.FromArgb(0, 32, 231);
+                                break;
+                            case 0xE:
+                                blah = Color.FromArgb(255, 0, 0);
+                                break;
+                            case 0xF:
+                                blah = Color.White;
+                                break;
+                            default:
+                                //tempval *= 16;
+                                tempval = 0;
+                                blah = Color.FromArgb(tempval, tempval, tempval);
+                                break;
+                        }
+
+                        bmp.SetPixel(x + ((indexY - 1) * width), y, blah);
+                    }
+                }
+                startPos += 0x400;
+            }
+            bmp.Save(strOutFile, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
         private void LoadFile(string strFile, string strOutFile, int width, int height)
         {
             byte[] data = File.ReadAllBytes(strFile);
@@ -204,6 +302,10 @@ namespace fmtownscolorize
                     else if (picType == 1)
                     {
                         CreateFile(strFile, strOutFile, width, height);
+                    }
+                    else if(picType == 2)
+                    {
+                        CreateFile16(strFile, strOutFile, width, height);
                     }
                 }
                 catch (Exception ex)
