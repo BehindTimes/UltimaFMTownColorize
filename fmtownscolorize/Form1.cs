@@ -29,9 +29,9 @@ namespace fmtownscolorize
                 height = tifImage.Height;
                 width = tifImage.Width;
 
-                if (length % 0x200 == 0)
+                if (length % 0x200 != 0)
                 {
-                    return 1;
+                    return 0;
                 }
             }
             catch (Exception ex)
