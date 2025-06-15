@@ -41,13 +41,13 @@ namespace fmtownscolorize
                 return 1;
             }
             byte[] data = File.ReadAllBytes(strFile);
-            for(int index = 0x400; index < data.Length; index++)
+            for (int index = 0x400; index < data.Length; index++)
             {
                 int tempval = data[index];
                 int val1 = (tempval >> 4) & 0xF;
                 int val2 = tempval & 0xF;
 
-                if(val1 > 7 || val2 > 7)
+                if (val1 > 7 || val2 > 7)
                 {
                     return 0;
                 }
@@ -58,36 +58,7 @@ namespace fmtownscolorize
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            string[] strFiles = Directory.GetFiles("G:\\source\\fmtowns\\testimage", "*.tif");
-
-            foreach (string strFile in strFiles)
-            {
-                string strOutFile = strFile;
-                strOutFile = strOutFile.Replace("TIF", "png");
-
-                try
-                {
-                    int height;
-                    int width;
-                    int picType = getPictureType(strFile, out height, out width);
-
-                    
-
-                    if(picType == 0)
-                    {
-                        Image tifImage = Image.FromFile(strFile);
-                        LoadFile(strFile, strOutFile, width, height);
-                    }
-                    else if(picType == 1)
-                    {
-                        CreateFile(strFile, strOutFile, width, height);
-                    }
-                }
-                catch (Exception ex)
-                {
-                }
-            }
+            
         }
 
         private void expandData(byte[] data)
@@ -127,7 +98,7 @@ namespace fmtownscolorize
                         switch (tempval)
                         {
                             case 0:
-                                if(numimages == 1)
+                                if (numimages == 1)
                                 {
                                     blah = Color.Black;
                                 }
@@ -135,7 +106,7 @@ namespace fmtownscolorize
                                 {
                                     blah = Color.Gray;
                                 }
-                                    
+
                                 break;
                             case 1:
                                 blah = Color.Blue;
@@ -210,6 +181,49 @@ namespace fmtownscolorize
             }
 
             bmp.Save(strOutFile, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string[] strFiles = Directory.GetFiles(tbDir.Text, "*.tif");
+
+            foreach (string strFile in strFiles)
+            {
+                string strOutFile = strFile;
+                strOutFile = strOutFile.Replace("TIF", "png");
+
+                try
+                {
+                    int height;
+                    int width;
+                    int picType = getPictureType(strFile, out height, out width);
+
+
+
+                    if (picType == 0)
+                    {
+                        Image tifImage = Image.FromFile(strFile);
+                        LoadFile(strFile, strOutFile, width, height);
+                    }
+                    else if (picType == 1)
+                    {
+                        CreateFile(strFile, strOutFile, width, height);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string folderPath = "";
+            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tbDir.Text = folderBrowserDialog1.SelectedPath;
+            }
         }
     }
 }
